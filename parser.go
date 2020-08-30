@@ -159,10 +159,10 @@ func (p *parser) parseLine() (li *lineInfo, err error) {
 		return &lineInfo{t: lIgnore}, nil
 	}
 
-	// Helper closure for all path tokens (allow/disallow), common behaviour:
+	// Helper closure for all Path tokens (Allow/disallow), common behaviour:
 	// - Consume t2 token
 	// - If empty, return unknown line info
-	// - Otherwise, normalize the path (add leading "/" if missing, remove trailing "*")
+	// - Otherwise, normalize the Path (add leading "/" if missing, remove trailing "*")
 	// - Detect if wildcards are present, if so, compile into a regexp
 	// - Return the specified line info
 	returnPathVal := func(t lineType) (*lineInfo, error) {
@@ -176,11 +176,11 @@ func (p *parser) parseLine() (li *lineInfo, err error) {
 			}
 			// From google's spec:
 			// Google, Bing, Yahoo, and Ask support a limited form of
-			// "wildcards" for path values. These are:
+			// "wildcards" for Path values. These are:
 			//   * designates 0 or more instances of any valid character
 			//   $ designates the end of the URL
 			if strings.ContainsAny(t2, "*$") {
-				// Must compile a regexp, this is a pattern.
+				// Must compile a regexp, this is a Pattern.
 				// Escape string before compile.
 				t2 = regexp.QuoteMeta(t2)
 				t2 = strings.Replace(t2, `\*`, `.*`, -1)
@@ -191,7 +191,7 @@ func (p *parser) parseLine() (li *lineInfo, err error) {
 					return &lineInfo{t: t, k: t1, vr: r}, nil
 				}
 			} else {
-				// Simple string path
+				// Simple string Path
 				return &lineInfo{t: t, k: t1, vs: t2}, nil
 			}
 		}
@@ -214,14 +214,14 @@ func (p *parser) parseLine() (li *lineInfo, err error) {
 
 	case "disallow":
 		// From google's spec:
-		// When no path is specified, the directive is ignored (so an empty Disallow
-		// CAN be an allow, since allow is the default. The actual result depends
+		// When no Path is specified, the directive is ignored (so an empty Disallow
+		// CAN be an Allow, since Allow is the default. The actual result depends
 		// on the other rules in the group).
 		return returnPathVal(lDisallow)
 
-	case "allow":
+	case "Allow":
 		// From google's spec:
-		// When no path is specified, the directive is ignored.
+		// When no Path is specified, the directive is ignored.
 		return returnPathVal(lAllow)
 
 	case "host":

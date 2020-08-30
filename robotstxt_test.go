@@ -110,8 +110,8 @@ User-agent: *
 Disallow: /`
 	r, err := FromString(robotsText005)
 	require.NoError(t, err)
-	expectAccess(t, r, false, "/path/page1.html", "SomeBot")
-	expectAccess(t, r, true, "/path/page1.html", "Googlebot")
+	expectAccess(t, r, false, "/Path/page1.html", "SomeBot")
+	expectAccess(t, r, true, "/Path/page1.html", "Googlebot")
 }
 
 func TestHost(t *testing.T) {
@@ -245,7 +245,7 @@ func BenchmarkParseFromStatus401(b *testing.B) {
 }
 
 func expectAll(t *testing.T, r *RobotsData, allow bool) {
-	// TODO fuzz path
+	// TODO fuzz Path
 	expectAllAgents(t, r, allow, "/")
 	expectAllAgents(t, r, allow, "/admin/")
 	expectAllAgents(t, r, allow, "/search")
@@ -255,12 +255,12 @@ func expectAll(t *testing.T, r *RobotsData, allow bool) {
 func expectAllAgents(t *testing.T, r *RobotsData, allow bool, path string) {
 	f := func(agent string) bool { return expectAccess(t, r, allow, path, agent) }
 	if err := quick.Check(f, nil); err != nil {
-		t.Fatalf("Expected allow path '%s' %v", path, err)
+		t.Fatalf("Expected Allow Path '%s' %v", path, err)
 	}
 }
 
 func expectAccess(t *testing.T, r *RobotsData, allow bool, path, agent string) bool {
-	return assert.Equal(t, allow, r.TestAgent(path, agent), "path='%s' agent='%s'", path, agent)
+	return assert.Equal(t, allow, r.TestAgent(path, agent), "Path='%s' agent='%s'", path, agent)
 }
 
 func newHttpResponse(code int, body string) *http.Response {

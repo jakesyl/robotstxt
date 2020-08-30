@@ -33,9 +33,9 @@ type Group struct {
 }
 
 type Rule struct {
-	path    string
-	allow   bool
-	pattern *regexp.Regexp
+	Path    string
+	Allow   bool
+	Pattern *regexp.Regexp
 }
 
 type ParseError struct {
@@ -69,7 +69,7 @@ func FromStatusAndBytes(statusCode int, body []byte) (*RobotsData, error) {
 	//
 	// Google treats all 4xx errors in the same way and assumes that no valid
 	// robots.txt file exists. It is assumed that there are no restrictions.
-	// This is a "full allow" for crawling. Note: this includes 401
+	// This is a "full Allow" for crawling. Note: this includes 401
 	// "Unauthorized" and 403 "Forbidden" HTTP result codes.
 	case statusCode >= 400 && statusCode < 500:
 		return allowAll, nil
@@ -180,7 +180,7 @@ func (r *RobotsData) FindGroup(agent string) (ret *Group) {
 
 func (g *Group) Test(path string) bool {
 	if r := g.findRule(path); r != nil {
-		return r.allow
+		return r.Allow
 	}
 
 	// From Google's spec:
@@ -194,35 +194,35 @@ func (g *Group) GetRules() []*Rule {
 }
 
 // From Google's spec:
-// The path value is used as a basis to determine whether or not a Rule applies
-// to a specific URL on a site. With the exception of wildcards, the path is
+// The Path value is used as a basis to determine whether or not a Rule applies
+// to a specific URL on a site. With the exception of wildcards, the Path is
 // used to match the beginning of a URL (and any valid URLs that start with the
-// same path).
+// same Path).
 //
-// At a group-member level, in particular for allow and disallow directives,
-// the most specific Rule based on the length of the [path] entry will trump
+// At a group-member level, in particular for Allow and disallow directives,
+// the most specific Rule based on the length of the [Path] entry will trump
 // the less specific (shorter) Rule. The order of precedence for rules with
 // wildcards is undefined.
 func (g *Group) findRule(path string) (ret *Rule) {
 	var prefixLen int
 
 	for _, r := range g.rules {
-		if r.pattern != nil {
-			if r.pattern.MatchString(path) {
-				// Consider this a match equal to the length of the pattern.
+		if r.Pattern != nil {
+			if r.Pattern.MatchString(path) {
+				// Consider this a match equal to the length of the Pattern.
 				// From Google's spec:
 				// The order of precedence for rules with wildcards is undefined.
-				if l := len(r.pattern.String()); l > prefixLen {
-					prefixLen = len(r.pattern.String())
+				if l := len(r.Pattern.String()); l > prefixLen {
+					prefixLen = len(r.Pattern.String())
 					ret = r
 				}
 			}
-		} else if r.path == "/" && prefixLen == 0 {
+		} else if r.Path == "/" && prefixLen == 0 {
 			// Weakest match possible
 			prefixLen = 1
 			ret = r
-		} else if strings.HasPrefix(path, r.path) {
-			if l := len(r.path); l > prefixLen {
+		} else if strings.HasPrefix(path, r.Path) {
+			if l := len(r.Path); l > prefixLen {
 				prefixLen = l
 				ret = r
 			}

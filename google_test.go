@@ -113,11 +113,11 @@ crawl-delay: 5`
 
 func TestWildcards(t *testing.T) {
 	const robotsCaseWildcards = `user-agent: *
-Disallow: /path*l$`
+Disallow: /Path*l$`
 
 	r, err := FromString(robotsCaseWildcards)
 	require.NoError(t, err)
-	assert.Equal(t, "/path.*l$", r.groups["*"].rules[0].pattern.String())
+	assert.Equal(t, "/Path.*l$", r.groups["*"].rules[0].Pattern.String())
 }
 
 func TestURLMatching(t *testing.T) {
@@ -128,13 +128,13 @@ func TestURLMatching(t *testing.T) {
 			"/",
 			"/test",
 			"",
-			"/path/to/whatever",
+			"/Path/to/whatever",
 		},
 		"b": {
 			"/",
 			"/test",
 			"",
-			"/path/to/whatever",
+			"/Path/to/whatever",
 		},
 		"c": {
 			"/fish",
@@ -206,7 +206,7 @@ func TestURLMatching(t *testing.T) {
 				p = p[1:]
 			}
 			if allow := r.TestAgent(p, k); allow != ok {
-				t.Errorf("Agent %s, path %s, expected %v, got %v", k, p, ok, allow)
+				t.Errorf("Agent %s, Path %s, expected %v, got %v", k, p, ok, allow)
 			}
 		}
 	}
@@ -247,7 +247,7 @@ func TestURLPrecedence(t *testing.T) {
 				p = p[1:]
 			}
 			if allow := r.TestAgent(p, k); allow != ok {
-				t.Errorf("Agent %s, path %s, expected %v, got %v", k, p, ok, allow)
+				t.Errorf("Agent %s, Path %s, expected %v, got %v", k, p, ok, allow)
 			}
 		}
 	}
