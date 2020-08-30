@@ -27,12 +27,12 @@ type RobotsData struct {
 }
 
 type Group struct {
-	rules      []*rule
+	rules      []*Rule
 	Agent      string
 	CrawlDelay time.Duration
 }
 
-type rule struct {
+type Rule struct {
 	path    string
 	allow   bool
 	pattern *regexp.Regexp
@@ -189,21 +189,21 @@ func (g *Group) Test(path string) bool {
 }
 
 // get rules for a given group
-func (g *Group) GetRules() []*rule {
+func (g *Group) GetRules() []*Rule {
 	return g.rules
 }
 
 // From Google's spec:
-// The path value is used as a basis to determine whether or not a rule applies
+// The path value is used as a basis to determine whether or not a Rule applies
 // to a specific URL on a site. With the exception of wildcards, the path is
 // used to match the beginning of a URL (and any valid URLs that start with the
 // same path).
 //
 // At a group-member level, in particular for allow and disallow directives,
-// the most specific rule based on the length of the [path] entry will trump
-// the less specific (shorter) rule. The order of precedence for rules with
+// the most specific Rule based on the length of the [path] entry will trump
+// the less specific (shorter) Rule. The order of precedence for rules with
 // wildcards is undefined.
-func (g *Group) findRule(path string) (ret *rule) {
+func (g *Group) findRule(path string) (ret *Rule) {
 	var prefixLen int
 
 	for _, r := range g.rules {
